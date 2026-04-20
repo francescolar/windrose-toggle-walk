@@ -1,0 +1,6 @@
+# ToggleWalk config
+# TOGGLE_KEY: Windows virtual-key code
+# Default: 67 (C). Examples:
+#   C=67, V=86, B=66, X=88, Z=90, CapsLock=20, LeftAlt=164, F=70
+# Key list: https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+TOGGLE_KEY=67
