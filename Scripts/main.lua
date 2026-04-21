@@ -1,6 +1,6 @@
 local UEHelpers = require("UEHelpers")
 
--- ToggleWalk 2.1 (single-player)
+-- ToggleWalk 2.2 (single-player)
 -- Flippa il bit bWantWalk sulla struct MovementIntention del
 -- R5MovementComponent leggendolo direttamente dal game (no state
 -- tracking locale -> resta sincronizzato anche se sprint/altro
@@ -20,24 +20,36 @@ end
 
 local TOGGLE_VK = loadConfig()
 
+local cachedMovementComp = nil
+
 -- ---------- helpers ----------
 local function getMovementComp()
+    if cachedMovementComp and cachedMovementComp:IsValid() then
+        return cachedMovementComp
+    end
+
     local p = UEHelpers.GetPlayer()
-    if not (p and p:IsValid()) then return nil end
-    local mv = p.CharacterMovement
-    if mv and mv:IsValid() then return mv end
+    if p and p:IsValid() then
+        local mv = p.CharacterMovement
+        if mv and mv:IsValid() then
+            cachedMovementComp = mv
+            return cachedMovementComp
+        end
+    end
+    
     return nil
 end
 
 local function doToggle()
     local mv = getMovementComp()
     if not mv then return end
-    pcall(function()
-        local int = mv.MovementIntention
-        local newWalk = not int.bWantWalk
-        int.bWantWalk = newWalk
-        if newWalk then int.bWantSprint = false end
-    end)
+    
+    local int = mv.MovementIntention
+    local newWalk = not int.bWantWalk
+    int.bWantWalk = newWalk
+    if newWalk then 
+        int.bWantSprint = false 
+    end
 end
 
 RegisterKeyBind(TOGGLE_VK, function()
